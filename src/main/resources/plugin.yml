@@ -1,0 +1,7 @@
+name: 'DropRemover'
+author: 'Hakan Kargın'
+version: 1.4.1
+main: com.hakan.drops.DropRemover
+commands:
+  drops:
+    aliases: [ drop ]
