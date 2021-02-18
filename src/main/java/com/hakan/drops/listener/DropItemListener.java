@@ -18,15 +18,15 @@ public class DropItemListener implements Listener {
             String hologram = ChatColor.translateAlternateColorCodes('&', DropRemover.config.getString("settings.hologram").replace("%material%", event.getItemDrop().getItemStack().getType().name()));
             event.getItemDrop().setCustomNameVisible(true);
             event.getItemDrop().setCustomName(hologram.replace("%amount%", event.getItemDrop().getItemStack().getAmount() + "").replace("%time%", deleteTime + ""));
+            final int[] counter = {0};
             new BukkitRunnable() {
-                int counter = 0;
-
+                @Override
                 public void run() {
                     if (event.getItemDrop().isDead()) {
                         cancel();
                         return;
                     }
-                    if (counter >= deleteTime) {
+                    if (counter[0] >= deleteTime) {
                         event.getItemDrop().remove();
                         boolean isParticle = DropRemover.config.getBoolean("settings.effect-active");
                         if (isParticle) {
@@ -35,9 +35,9 @@ public class DropItemListener implements Listener {
                         }
                         cancel();
                     } else {
-                        event.getItemDrop().setCustomName(hologram.replace("%amount%", event.getItemDrop().getItemStack().getAmount() + "").replace("%time%", deleteTime - counter + ""));
+                        event.getItemDrop().setCustomName(hologram.replace("%amount%", event.getItemDrop().getItemStack().getAmount() + "").replace("%time%", deleteTime - counter[0] + ""));
                     }
-                    counter++;
+                    counter[0]++;
                 }
             }.runTaskTimer(DropRemover.getInstance(), 0, 20);
         }
