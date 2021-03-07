@@ -1,43 +1,47 @@
 package com.hakan.drops.listener;
 
 import com.hakan.drops.DropRemover;
-import com.hakan.drops.nms.DropNMS;
+import com.hakan.drops.utils.Variables;
+import com.hakan.particle.Particle;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 public class DropItemListener implements Listener {
 
     @EventHandler
     public void onDropItem(PlayerDropItemEvent event) {
-        boolean isActive = DropRemover.config.getBoolean("settings.active");
-        if (isActive) {
-            int deleteTime = DropRemover.config.getInt("settings.remove-time");
-            String hologram = ChatColor.translateAlternateColorCodes('&', DropRemover.config.getString("settings.hologram").replace("%material%", event.getItemDrop().getItemStack().getType().name()));
-            event.getItemDrop().setCustomNameVisible(true);
-            event.getItemDrop().setCustomName(hologram.replace("%amount%", event.getItemDrop().getItemStack().getAmount() + "").replace("%time%", deleteTime + ""));
-            final int[] counter = {0};
+        if (Variables.isActive) {
+
+            int deleteTime = Variables.removeTime;
+            String hologram = ChatColor.translateAlternateColorCodes('&', Variables.hologram.replace("%material%", event.getItemDrop().getItemStack().getType().name()));
+
+            Item itemDrop = event.getItemDrop();
+            itemDrop.setCustomNameVisible(true);
+            itemDrop.setCustomName(hologram.replace("%amount%", itemDrop.getItemStack().getAmount() + "").replace("%time%", deleteTime + ""));
+
             new BukkitRunnable() {
-                @Override
+                int counter = 0;
+
                 public void run() {
-                    if (event.getItemDrop().isDead()) {
+                    if (itemDrop.isDead()) {
                         cancel();
                         return;
-                    }
-                    if (counter[0] >= deleteTime) {
-                        event.getItemDrop().remove();
-                        boolean isParticle = DropRemover.config.getBoolean("settings.effect-active");
-                        if (isParticle) {
-                            String particleName = DropRemover.config.getString("settings.effect");
-                            DropNMS.getParticle().spawnParticle(particleName, event.getItemDrop().getLocation(), 0.1, 0.1, 0.1, 0.02, 20);
+                    } else if (counter >= deleteTime) {
+                        itemDrop.remove();
+                        if (Variables.effectActive) {
+                            Variables.particleAPI.sendAll(event.getItemDrop().getLocation(), new Particle(Variables.effect, 20, 0.02, new Vector(0.1, 0.1, 0.1)));
                         }
                         cancel();
+                        return;
                     } else {
-                        event.getItemDrop().setCustomName(hologram.replace("%amount%", event.getItemDrop().getItemStack().getAmount() + "").replace("%time%", deleteTime - counter[0] + ""));
+                        itemDrop.setCustomName(hologram.replace("%amount%", itemDrop.getItemStack().getAmount() + "").replace("%time%", (deleteTime - counter) + ""));
                     }
-                    counter[0]++;
+                    counter++;
                 }
             }.runTaskTimer(DropRemover.getInstance(), 0, 20);
         }

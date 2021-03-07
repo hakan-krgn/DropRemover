@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/../../..</output-path>
     <root id="archive" name="DropRemover.jar">
       <element id="module-output" name="DropRemover" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/hakan/ParticleAPI/1.0.0/ParticleAPI-1.0.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

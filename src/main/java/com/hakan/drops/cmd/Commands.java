@@ -1,12 +1,10 @@
 package com.hakan.drops.cmd;
 
 import com.hakan.drops.DropRemover;
+import com.hakan.drops.utils.Variables;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
-
-import java.io.File;
 
 public class Commands implements CommandExecutor {
 
@@ -14,7 +12,12 @@ public class Commands implements CommandExecutor {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] args) {
         if (command.getName().equals("drops")) {
             if (args[0].equals("reload") || args[0].equals("yenile")) {
-                DropRemover.config = YamlConfiguration.loadConfiguration(new File(DropRemover.getInstance().getDataFolder() + "/config.yml"));
+                DropRemover.config.reload();
+                Variables.isActive = DropRemover.config.getBoolean("settings.active");
+                Variables.removeTime = DropRemover.config.getInt("settings.remove-time");
+                Variables.effectActive = DropRemover.config.getBoolean("settings.effect-active");
+                Variables.effect = DropRemover.config.getString("settings.effect");
+                Variables.hologram = DropRemover.config.getString("settings.hologram");
                 commandSender.sendMessage("§aDropRemover has been reloaded.");
             }
         }
