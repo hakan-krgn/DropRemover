@@ -13,11 +13,9 @@ public class Commands implements CommandExecutor {
         if (command.getName().equals("drops")) {
             if (args[0].equals("reload") || args[0].equals("yenile")) {
                 DropRemover.config.reload();
-                Variables.isActive = DropRemover.config.getBoolean("settings.active");
-                Variables.removeTime = DropRemover.config.getInt("settings.remove-time");
-                Variables.effectActive = DropRemover.config.getBoolean("settings.effect-active");
-                Variables.effect = DropRemover.config.getString("settings.effect");
-                Variables.hologram = DropRemover.config.getString("settings.hologram");
+
+                new Variables().setup();
+
                 commandSender.sendMessage("§aDropRemover has been reloaded.");
             }
         }
