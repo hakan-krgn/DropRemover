@@ -1,6 +1,6 @@
 name: 'DropRemover'
 author: 'Hakan Kargın'
-version: 1.4.3
+version: 1.4.4
 main: com.hakan.drops.DropRemover
 commands:
   drops:
