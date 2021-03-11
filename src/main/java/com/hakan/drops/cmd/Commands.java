@@ -13,7 +13,6 @@ public class Commands implements CommandExecutor {
         if (command.getName().equals("drops")) {
             if (args[0].equals("reload") || args[0].equals("yenile")) {
                 DropRemover.config.reload();
-
                 new Variables().setup();
 
                 commandSender.sendMessage("§aDropRemover has been reloaded.");
